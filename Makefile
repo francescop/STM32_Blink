@@ -1,11 +1,14 @@
 # Sources
-
 SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c syscalls.c utils.c
 
 # Project name
 
-PROJ_NAME=stm32f4_sample
+PROJ_NAME=main
 OUTPATH=build
+
+# OpenOCD conf file
+OPENOCD_CONFIG_PATH=/home/francesco/openocd/stm32f4discovery.cfg
+OPENOCD_LOGFILE_PATH=/dev/null
 
 ###################################################
 
@@ -14,9 +17,9 @@ OUTPATH=build
 # changing these as hardfloat and softfloat are not
 # binary compatible
 ifneq ($(FLOAT_TYPE), hard)
-ifneq ($(FLOAT_TYPE), soft)
-override FLOAT_TYPE = hard
-#override FLOAT_TYPE = soft
+	ifneq ($(FLOAT_TYPE), soft)
+	override FLOAT_TYPE = hard
+	#override FLOAT_TYPE = soft
 endif
 endif
 
@@ -31,11 +34,11 @@ CFLAGS  = -std=gnu99 -g -O2 -Wall -Tstm32_flash.ld
 CFLAGS += -mlittle-endian -mthumb -mthumb-interwork -nostartfiles -mcpu=cortex-m4
 
 ifeq ($(FLOAT_TYPE), hard)
-CFLAGS += -fsingle-precision-constant -Wdouble-promotion
-CFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=hard
-#CFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+	CFLAGS += -fsingle-precision-constant -Wdouble-promotion
+	CFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=hard
+	#CFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
 else
-CFLAGS += -msoft-float
+	CFLAGS += -msoft-float
 endif
 
 ###################################################
@@ -75,4 +78,14 @@ clean:
 	rm -f $(OUTPATH)/$(PROJ_NAME).hex
 	rm -f $(OUTPATH)/$(PROJ_NAME).bin
 	$(MAKE) clean -C lib # Remove this line if you don't want to clean the libs as well
-	
+
+upload: lib proj flash
+
+flash:
+	arm-none-eabi-gdb -silent --command=gdb_commands $(OUTPATH)/$(PROJ_NAME).elf
+
+debug:
+	arm-none-eabi-gdb --command=gdb_debug_commands $(OUTPATH)/$(PROJ_NAME).elf
+
+openocd:
+	openocd -f $(OPENOCD_CONFIG_PATH) --log_output $(OPENOCD_LOGFILE_PATH) &
