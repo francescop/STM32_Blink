@@ -17,25 +17,26 @@ int main(void) {
 }
 
 void loop(){
+    Print("ciao\n");
     GPIO_ResetBits(GPIOD, GPIO_Pin_15);
     GPIO_SetBits(GPIOD, GPIO_Pin_12);
     Delay(1000);
+
     GPIO_ResetBits(GPIOD, GPIO_Pin_12);
     GPIO_SetBits(GPIOD, GPIO_Pin_13);
     Delay(1000);
+    
     GPIO_ResetBits(GPIOD, GPIO_Pin_13);
     GPIO_SetBits(GPIOD, GPIO_Pin_14);
     Delay(1000);
+
     GPIO_ResetBits(GPIOD, GPIO_Pin_14);
     GPIO_SetBits(GPIOD, GPIO_Pin_15);
     Delay(1000);
-
 }
-
 
 void setup() {
 	GPIO_InitTypeDef  GPIO_InitStructure;
-
 
 	// GPIOD Periph clock enable
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
@@ -59,6 +60,5 @@ void setup() {
  * Dummy function to avoid compiler error
  */
 void _init() {
-
 }
 

@@ -30,7 +30,7 @@ CC=$(BINPATH)/arm-none-eabi-gcc
 OBJCOPY=$(BINPATH)/arm-none-eabi-objcopy
 SIZE=$(BINPATH)/arm-none-eabi-size
 
-CFLAGS  = -std=gnu99 -g -O2 -Wall -Tstm32_flash.ld
+CFLAGS  = -std=gnu99 -g -O2 -Wall -Tstm32_flash.ld --specs=nano.specs --specs=rdimon.specs -lc -lc -lrdimon
 CFLAGS += -mlittle-endian -mthumb -mthumb-interwork -nostartfiles -mcpu=cortex-m4
 
 ifeq ($(FLOAT_TYPE), hard)
@@ -84,8 +84,10 @@ upload: lib proj flash
 flash:
 	arm-none-eabi-gdb -silent --command=gdb_commands $(OUTPATH)/$(PROJ_NAME).elf
 
+gdb: lib proj flash debug
+
 debug:
 	arm-none-eabi-gdb --command=gdb_debug_commands $(OUTPATH)/$(PROJ_NAME).elf
 
 openocd:
-	openocd -f $(OPENOCD_CONFIG_PATH) --log_output $(OPENOCD_LOGFILE_PATH) &
+	openocd -f $(OPENOCD_CONFIG_PATH) #--log_output $(OPENOCD_LOGFILE_PATH) > $(OPENOCD_LOGFILE_PATH)

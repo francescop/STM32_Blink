@@ -12,5 +12,6 @@
  * Functions
  */
 char* ftostr(float value, int places);
+void Print(const char *msg);
 
 #endif /* UTILS_H_ */
