@@ -1,5 +1,5 @@
 # Sources
-SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c syscalls.c utils.c
+SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c utils.c
 
 # Project name
 
@@ -30,8 +30,10 @@ CC=$(BINPATH)/arm-none-eabi-gcc
 OBJCOPY=$(BINPATH)/arm-none-eabi-objcopy
 SIZE=$(BINPATH)/arm-none-eabi-size
 
-CFLAGS  = -std=gnu99 -g -O2 -Wall -Tstm32_flash.ld --specs=nano.specs --specs=rdimon.specs -lc -lc -lrdimon
+CFLAGS  = -std=gnu99 -g -O2 -Wall -Tstm32_flash.ld 
 CFLAGS += -mlittle-endian -mthumb -mthumb-interwork -nostartfiles -mcpu=cortex-m4
+
+SEMIHOSTING_FLAGS = --specs=rdimon.specs -lc -lrdimon 
 
 ifeq ($(FLOAT_TYPE), hard)
 	CFLAGS += -fsingle-precision-constant -Wdouble-promotion
@@ -68,7 +70,7 @@ lib:
 proj: 	$(OUTPATH)/$(PROJ_NAME).elf
 
 $(OUTPATH)/$(PROJ_NAME).elf: $(SRCS)
-	$(CC) $(CFLAGS) $^ -o $@ -Llib -lstm32f4 -lm
+	$(CC) $(SEMIHOSTING_FLAGS) $(CFLAGS) $^ -o $@ -Llib -lstm32f4 -lm
 	$(OBJCOPY) -O ihex $(OUTPATH)/$(PROJ_NAME).elf $(OUTPATH)/$(PROJ_NAME).hex
 	$(OBJCOPY) -O binary $(OUTPATH)/$(PROJ_NAME).elf $(OUTPATH)/$(PROJ_NAME).bin
 
