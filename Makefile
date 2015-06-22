@@ -10,6 +10,8 @@ OUTPATH=build
 OPENOCD_CONFIG_PATH=/home/francesco/openocd/stm32f4discovery.cfg
 OPENOCD_LOGFILE_PATH=/dev/null
 
+STM_COMMON=orig
+
 ###################################################
 
 # Check for valid float argument
@@ -50,8 +52,15 @@ vpath %.a lib
 
 ROOT=$(shell pwd)
 
+# custom libraries
 CFLAGS += -Iinc -Ilib -Ilib/inc 
 CFLAGS += -Ilib/inc/core -Ilib/inc/peripherals 
+
+# Include files from original STM libraries
+#CFLAGS += -I$(STM_COMMON)/CMSIS/Include 
+#CFLAGS += -I$(STM_COMMON)/Utilities/STM32F4-Discovery
+#CFLAGS += -I$(STM_COMMON)/CMSIS/ST/STM32F4xx/Include
+#CFLAGS += -I$(STM_COMMON)/STM32F4xx_StdPeriph_Driver/inc 
 
 SRCS += lib/startup_stm32f4xx.s # add startup file to build
 

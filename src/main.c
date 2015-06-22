@@ -12,11 +12,6 @@ void loop();
 void rotate();
 
 int main(void) {
-
-  setbuf(stdout, NULL);
-
-  printf("Hello world\r\n");
-  printf("Press ciao to continue\r\n");
 	setup();
   while (1) {
     loop();
@@ -31,15 +26,14 @@ void loop(){
   GPIO_ResetBits(GPIOD, GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15);
 
   if(in&0x0001) {
-
+    GPIO_SetBits(GPIOD, GPIO_Pin_12);
     setbuf(stdout, NULL);
     printf("Hello world\r\n");
-    GPIO_SetBits(GPIOD, GPIO_Pin_12);
   } else {
     GPIO_SetBits(GPIOD, GPIO_Pin_14);
-    delay(500);
+    delay(1000);
     GPIO_ResetBits(GPIOD, GPIO_Pin_14);
-    delay(500);
+    delay(1000);
   }
 
 }
